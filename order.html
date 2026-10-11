@@ -12,220 +12,140 @@
 <body>
 
 <header class="navbar">
-
     <a href="index.html" class="brand">
         🖨️ <strong>Printzy</strong>
     </a>
 
     <nav>
         <a href="index.html">Home</a>
-        <a class="active" href="order.html">Order</a>
+        <a href="order.html" class="active">Order</a>
         <a href="login.html">Student Login</a>
         <a href="staff-login.html">Staff</a>
         <a href="admin-login.html">Admin</a>
     </nav>
-
 </header>
-
 
 <main class="page">
 
     <div class="page-heading">
         <span class="pill">📝 New Order</span>
-
         <h1>Place Your Print Order</h1>
-
-        <p>
-            Choose your printing, binding, payment and delivery options.
-        </p>
+        <p>Choose your printing, binding, payment and delivery options.</p>
     </div>
-
 
     <div class="order-layout">
 
-        <!-- ================= ORDER FORM ================= -->
-
+        <!-- ORDER FORM -->
         <form id="orderForm" class="form-card">
 
             <h2>👤 Student Details</h2>
 
             <div class="two-col">
-
                 <label>
                     Student Name
-
                     <input
                         type="text"
                         id="studentName"
-                        placeholder="Your name"
+                        placeholder="Enter your name"
                         required
                     >
                 </label>
-
 
                 <label>
                     Phone Number
-
                     <input
                         type="tel"
                         id="phone"
-                        placeholder="10-digit mobile number"
+                        placeholder="10-digit phone number"
                         maxlength="10"
+                        inputmode="numeric"
+                        pattern="[0-9]{10}"
                         required
                     >
                 </label>
-
             </div>
-
 
             <label>
                 Department
 
                 <select id="department" required>
-
-                    <option value="">
-                        Select Department
-                    </option>
-
+                    <option value="">Select Department</option>
                     <option value="IT">IT</option>
-
                     <option value="ECE">ECE</option>
-
-                    <option value="CYBER SECURITY">
-                        CYBER SECURITY
-                    </option>
-
-                    <option value="AIDS">
-                        AI & DS (AIDS)
-                    </option>
-
-                    <option value="AIML">
-                        AI & ML (AIML)
-                    </option>
-
-                    <option value="AUTO">
-                        AUTOMOBILE (AUTO)
-                    </option>
-
-                    <option value="MECH">
-                        MECHANICAL (MECH)
-                    </option>
-
-                    <option value="CIVIL">
-                        CIVIL
-                    </option>
-
-                    <option value="CSE">
-                        CSE
-                    </option>
-
-                    <option value="VLSI">
-                        VLSI
-                    </option>
-
-                    <option value="EEE">
-                        EEE
-                    </option>
-
+                    <option value="CYBER SECURITY">Cyber Security</option>
+                    <option value="AIDS">AI &amp; DS (AIDS)</option>
+                    <option value="AIML">AI &amp; ML (AIML)</option>
+                    <option value="AUTO">Automobile (AUTO)</option>
+                    <option value="MECH">Mechanical (MECH)</option>
+                    <option value="CIVIL">Civil</option>
+                    <option value="CSE">CSE</option>
+                    <option value="VLSI">VLSI</option>
+                    <option value="EEE">EEE</option>
                 </select>
-
             </label>
-
 
             <label>
                 Class / Year
-
                 <input
                     type="text"
                     id="studentClass"
                     placeholder="Example: 1st Year / IT-A"
                     required
                 >
-
             </label>
-
 
             <h2>🖨️ Print Details</h2>
 
-
             <label>
-                PDF File
-
+                Upload PDF
                 <input
                     type="file"
                     id="pdfFile"
                     accept=".pdf,application/pdf"
                     required
                 >
-
             </label>
 
-            <p class="hint">
-                PDF only • Maximum 10 MB
-            </p>
-
+            <p class="hint">PDF only. Maximum file size: 10 MB.</p>
 
             <div class="two-col">
 
                 <label>
-                    Copies
-
+                    Number of Copies
                     <input
                         type="number"
                         id="copies"
                         value="1"
                         min="1"
+                        max="500"
+                        step="1"
                         required
                     >
                 </label>
 
-
                 <label>
                     Print Type
-
                     <select id="printType">
-
-                        <option value="BW">
-                            B&W — ₹1/copy
-                        </option>
-
-                        <option value="COLOUR">
-                            Colour — ₹5/copy
-                        </option>
-
+                        <option value="BW">Black &amp; White — ₹1/copy</option>
+                        <option value="COLOUR">Colour — ₹5/copy</option>
                     </select>
-
                 </label>
 
             </div>
 
-
             <label>
                 Printing Side
-
                 <select id="side">
-
-                    <option value="Single Side">
-                        Single Side
-                    </option>
-
-                    <option value="Double Side">
-                        Double Side
-                    </option>
-
+                    <option value="Single Side">Single Side</option>
+                    <option value="Double Side">Double Side</option>
                 </select>
-
             </label>
 
-
-            <!-- ================= BINDING ================= -->
-
-            <h2>📚 Binding & Finishing</h2>
+            <h2>📚 Binding &amp; Finishing</h2>
 
             <div class="binding-options">
 
                 <label class="choice-card">
-
                     <input
                         type="radio"
                         name="binding"
@@ -233,111 +153,85 @@
                         data-price="0"
                         checked
                     >
-
                     <span>
                         <strong>📄 No Binding</strong>
                         <small>₹0</small>
                     </span>
-
                 </label>
 
-
                 <label class="choice-card">
-
                     <input
                         type="radio"
                         name="binding"
                         value="Stapling"
                         data-price="5"
                     >
-
                     <span>
                         <strong>📎 Stapling</strong>
                         <small>₹5</small>
                     </span>
-
                 </label>
 
-
                 <label class="choice-card">
-
                     <input
                         type="radio"
                         name="binding"
                         value="Spiral Binding"
                         data-price="30"
                     >
-
                     <span>
                         <strong>🌀 Spiral Binding</strong>
                         <small>₹30</small>
                     </span>
-
                 </label>
 
-
                 <label class="choice-card">
-
                     <input
                         type="radio"
                         name="binding"
                         value="Comb Binding"
                         data-price="25"
                     >
-
                     <span>
                         <strong>📑 Comb Binding</strong>
                         <small>₹25</small>
                     </span>
-
                 </label>
 
-
                 <label class="choice-card">
-
                     <input
                         type="radio"
                         name="binding"
                         value="Softcover"
                         data-price="40"
                     >
-
                     <span>
                         <strong>📘 Softcover</strong>
                         <small>₹40</small>
                     </span>
-
                 </label>
 
-
                 <label class="choice-card">
-
                     <input
                         type="radio"
                         name="binding"
                         value="Hardcover"
                         data-price="80"
                     >
-
                     <span>
                         <strong>📕 Hardcover</strong>
                         <small>₹80</small>
                     </span>
-
                 </label>
 
             </div>
 
-
-            <!-- ================= DELIVERY ================= -->
-
-            <h2>🚚 Delivery</h2>
+            <h2>🚚 Delivery Details</h2>
 
             <div class="two-col">
 
                 <label>
                     Delivery Location
-
                     <input
                         type="text"
                         id="deliveryLocation"
@@ -346,10 +240,8 @@
                     >
                 </label>
 
-
                 <label>
                     Delivery Time
-
                     <input
                         type="text"
                         id="deliveryTime"
@@ -360,15 +252,11 @@
 
             </div>
 
-
-            <!-- ================= PAYMENT ================= -->
-
-            <h2>💳 Payment</h2>
+            <h2>💳 Payment Method</h2>
 
             <div class="payment-options">
 
                 <label class="payment-card">
-
                     <input
                         type="radio"
                         name="paymentMethod"
@@ -380,12 +268,9 @@
                         📱 UPI / GPay
                         <small>Pay using your UPI app</small>
                     </span>
-
                 </label>
 
-
                 <label class="payment-card">
-
                     <input
                         type="radio"
                         name="paymentMethod"
@@ -394,21 +279,18 @@
 
                     <span>
                         💵 Pay Later
-                        <small>Only if Printzy offers this</small>
+                        <small>Choose only if this option is offered</small>
                     </span>
-
                 </label>
 
             </div>
 
-
+            <!-- UPI DETAILS -->
             <div class="upi-box">
 
                 <strong>Printzy UPI ID</strong>
 
-                <span id="upiDisplay">
-                    YOUR-UPI-ID@upi
-                </span>
+                <p id="upiDisplay">8695185199@pytes</p>
 
                 <button
                     type="button"
@@ -423,18 +305,20 @@
                     id="gpayBtn"
                     class="btn secondary-btn"
                     target="_blank"
+                    rel="noopener"
                 >
                     📱 Open UPI / GPay
                 </a>
 
                 <p class="hint">
-                    Replace the demo UPI ID in
-                    <b>script.js</b> with your real business UPI ID.
+                    Before paying, verify the recipient and amount in your
+                    UPI app. Opening a payment app does not confirm that
+                    payment was completed.
                 </p>
 
             </div>
 
-
+            <!-- SUBMIT BUTTON -->
             <button
                 type="submit"
                 class="btn primary-btn full"
@@ -442,72 +326,46 @@
                 ✨ Place Order
             </button>
 
-
             <p
                 id="orderMessage"
                 class="message"
+                role="status"
+                aria-live="polite"
             ></p>
 
         </form>
 
-
-        <!-- ================= BILL ================= -->
-
+        <!-- ORDER SUMMARY -->
         <aside class="bill-card">
 
             <h2>🧾 Order Summary</h2>
 
-
             <div class="bill-line">
-
                 <span>Printing</span>
-
-                <strong id="printingAmount">
-                    ₹0
-                </strong>
-
+                <strong id="printingAmount">₹1.00</strong>
             </div>
 
-
             <div class="bill-line">
-
                 <span>Binding</span>
-
-                <strong id="bindingAmount">
-                    ₹0
-                </strong>
-
+                <strong id="bindingAmount">₹0.00</strong>
             </div>
-
 
             <div class="bill-line">
-
                 <span>Delivery</span>
-
-                <strong>
-                    ₹20
-                </strong>
-
+                <strong>₹20.00</strong>
             </div>
-
 
             <hr>
 
-
             <div class="bill-total">
-
                 <span>Total</span>
-
-                <strong id="estimatedTotal">
-                    ₹20
-                </strong>
-
+                <strong id="estimatedTotal">₹21.00</strong>
             </div>
 
-
             <p class="mini-note">
-                B&W ₹1/copy • Colour ₹5/copy
-                • Delivery ₹20
+                Black &amp; White: ₹1/copy<br>
+                Colour: ₹5/copy<br>
+                Delivery: ₹20
             </p>
 
         </aside>
@@ -516,12 +374,11 @@
 
 </main>
 
-
 <footer class="footer">
     <p>© 2026 Printzy • Print Smart. Study Better. 💗</p>
 </footer>
 
-
+<!-- Keep script.js in the same folder as this file -->
 <script src="script.js"></script>
 
 </body>
