@@ -1,78 +1,252 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Login | Printzy</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Login | Printzy</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: #fff7ff;
+      color: #29243d;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 420px;
+      padding: 35px;
+      background: white;
+      border: 1px solid #eadcf5;
+      border-radius: 20px;
+      box-shadow: 0 12px 35px #39224b15;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #777;
+      margin-bottom: 28px;
+    }
+
+    label {
+      display: block;
+      margin: 16px 0 7px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #dfd0eb;
+      border-radius: 9px;
+      font-size: 16px;
+    }
+
+    input:focus {
+      outline: 2px solid #a477db;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 20px;
+      border: none;
+      border-radius: 9px;
+      background: #7750b5;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #603b9b;
+    }
+
+    .switch {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .switch a {
+      color: #7044ae;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    #message {
+      margin-top: 15px;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .home-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #7044ae;
+      text-decoration: none;
+    }
+  </style>
 </head>
 
-<body class="auth-page">
+<body>
+  <div class="login-box">
+    <h1>🖨️ Printzy</h1>
+    <p class="subtitle" id="subtitle">Student Login</p>
 
-<header class="navbar">
-    <a href="index.html" class="brand">
-        🖨️ <strong>Printzy</strong>
-    </a>
+    <form id="loginForm">
+      <label for="email">Email Address</label>
+      <input
+        type="email"
+        id="email"
+        placeholder="Enter your email"
+        autocomplete="email"
+        required
+      >
 
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="order.html">Order</a>
-        <a href="staff-login.html">Staff</a>
-        <a href="admin-login.html">Admin</a>
-    </nav>
-</header>
+      <label for="password">Password</label>
+      <input
+        type="password"
+        id="password"
+        placeholder="Enter your password"
+        autocomplete="current-password"
+        minlength="6"
+        required
+      >
 
-<main class="auth-container">
+      <button type="submit" id="submitButton">Login</button>
+    </form>
 
-    <section class="auth-card">
+    <p class="switch">
+      <span id="switchText">New student?</span>
+      <a href="#" id="switchMode">Create account</a>
+    </p>
 
-        <div class="auth-icon">🎓</div>
+    <p id="message" role="status" aria-live="polite"></p>
 
-        <h1>Student Login</h1>
+    <a class="home-link" href="index.html">← Back to Home</a>
+  </div>
 
-        <p>
-            Login to place and track your Printzy orders.
-        </p>
+  <script>
+    const form = document.getElementById("loginForm");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const submitButton = document.getElementById("submitButton");
+    const switchMode = document.getElementById("switchMode");
+    const switchText = document.getElementById("switchText");
+    const subtitle = document.getElementById("subtitle");
+    const message = document.getElementById("message");
 
-        <form id="loginForm">
+    let isRegistering = false;
 
-            <label>
-                Student ID / Username
-                <input
-                    type="text"
-                    id="username"
-                    placeholder="Enter your username"
-                    required
-                >
-            </label>
+    switchMode.addEventListener("click", function (event) {
+      event.preventDefault();
 
-            <label>
-                Password
-                <input
-                    type="password"
-                    id="password"
-                    placeholder="Enter password"
-                    required
-                >
-            </label>
+      isRegistering = !isRegistering;
+      message.textContent = "";
 
-            <button type="submit" class="btn primary-btn full">
-                Login →
-            </button>
+      if (isRegistering) {
+        subtitle.textContent = "Create Student Account";
+        submitButton.textContent = "Create Account";
+        switchText.textContent = "Already registered?";
+        switchMode.textContent = "Login";
+        passwordInput.autocomplete = "new-password";
+      } else {
+        subtitle.textContent = "Student Login";
+        submitButton.textContent = "Login";
+        switchText.textContent = "New student?";
+        switchMode.textContent = "Create account";
+        passwordInput.autocomplete = "current-password";
+      }
+    });
 
-        </form>
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
 
-        <p id="loginMessage" class="message"></p>
+      const email = emailInput.value.trim().toLowerCase();
+      const password = passwordInput.value;
 
-        <button id="guestBtn" class="link-btn">
-            Continue as Guest
-        </button>
+      if (password.length < 6) {
+        message.textContent = "Password must be at least 6 characters.";
+        message.style.color = "red";
+        return;
+      }
 
-    </section>
+      // Demo only: accounts are stored in this browser.
+      let students = {};
 
-</main>
+      try {
+        students = JSON.parse(
+          localStorage.getItem("printzyDemoStudents") || "{}"
+        );
+      } catch (error) {
+        message.textContent = "Could not read saved accounts.";
+        message.style.color = "red";
+        return;
+      }
 
-<script src="script.js"></script>
+      if (isRegistering) {
+        if (students[email]) {
+          message.textContent = "This email already has an account. Please log in.";
+          message.style.color = "red";
+          return;
+        }
 
+        students[email] = { password: password };
+
+        try {
+          localStorage.setItem(
+            "printzyDemoStudents",
+            JSON.stringify(students)
+          );
+        } catch (error) {
+          message.textContent = "Could not save your account in this browser.";
+          message.style.color = "red";
+          return;
+        }
+
+        message.textContent = "Account created! You can now log in.";
+        message.style.color = "green";
+
+        isRegistering = false;
+        subtitle.textContent = "Student Login";
+        submitButton.textContent = "Login";
+        switchText.textContent = "New student?";
+        switchMode.textContent = "Create account";
+        passwordInput.value = "";
+        passwordInput.autocomplete = "current-password";
+
+      } else {
+        if (
+          students[email] &&
+          students[email].password === password
+        ) {
+          sessionStorage.setItem("printzyStudentEmail", email);
+          window.location.href = "order.html";
+        } else {
+          message.textContent =
+            "Incorrect email or password, or create an account first.";
+          message.style.color = "red";
+        }
+      }
+    });
+  </script>
 </body>
 </html>
