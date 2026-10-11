@@ -4,7 +4,7 @@
    PRINTZY SETTINGS
 ====================================== */
 
-const UPI_ID = "8695185199@pytes";
+const UPI_ID = "8695185199@ptyes";
 const DELIVERY_CHARGE = 20;
 const MAX_PDF_SIZE = 10 * 1024 * 1024;
 
