@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Staff Login | Printzy</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body class="auth-page">
+
+
+<header class="navbar">
+
+    <a href="index.html" class="brand">
+        🖨️ <strong>Printzy</strong>
+    </a>
+
+    <nav>
+
+        <a href="index.html">
+            Home
+        </a>
+
+        <a href="order.html">
+            Order
+        </a>
+
+        <a href="admin-login.html">
+            Admin
+        </a>
+
+    </nav>
+
+</header>
+
+
+
+<main class="auth-container">
+
+    <section class="auth-card">
+
+        <div class="auth-icon">
+            🧑‍💻
+        </div>
+
+        <h1>
+            Staff Login
+        </h1>
+
+        <p>
+            View your assigned orders and update their status.
+        </p>
+
+
+        <form id="staffLoginForm">
+
+            <label>
+
+                Staff ID
+
+                <input
+                    type="text"
+                    id="staffUsername"
+                    placeholder="PZ-ST001"
+                    required
+                >
+
+            </label>
+
+
+            <label>
+
+                Password
+
+                <input
+                    type="password"
+                    id="staffPassword"
+                    placeholder="Enter password"
+                    required
+                >
+
+            </label>
+
+
+            <button
+                type="submit"
+                class="btn primary-btn full"
+            >
+                🧑‍💻 Staff Login
+            </button>
+
+        </form>
+
+
+        <p
+            id="staffLoginMessage"
+            class="message"
+        ></p>
+
+
+        <div class="demo-box">
+
+            <strong>Demo Staff Accounts</strong>
+
+            <br><br>
+
+            Staff 1:
+            <b>PZ-ST001</b>
+            /
+            <b>staff001</b>
+
+            <br><br>
+
+            Staff 2:
+            <b>PZ-ST002</b>
+            /
+            <b>staff002</b>
+
+            <br><br>
+
+            Staff 3:
+            <b>PZ-ST003</b>
+            /
+            <b>staff003</b>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>

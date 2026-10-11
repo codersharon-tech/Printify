@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Login | Printzy</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="auth-page">
+
+<header class="navbar">
+    <a href="index.html" class="brand">
+        🖨️ <strong>Printzy</strong>
+    </a>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="order.html">Order</a>
+        <a href="staff-login.html">Staff</a>
+        <a href="admin-login.html">Admin</a>
+    </nav>
+</header>
+
+<main class="auth-container">
+
+    <section class="auth-card">
+
+        <div class="auth-icon">🎓</div>
+
+        <h1>Student Login</h1>
+
+        <p>
+            Login to place and track your Printzy orders.
+        </p>
+
+        <form id="loginForm">
+
+            <label>
+                Student ID / Username
+                <input
+                    type="text"
+                    id="username"
+                    placeholder="Enter your username"
+                    required
+                >
+            </label>
+
+            <label>
+                Password
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Enter password"
+                    required
+                >
+            </label>
+
+            <button type="submit" class="btn primary-btn full">
+                Login →
+            </button>
+
+        </form>
+
+        <p id="loginMessage" class="message"></p>
+
+        <button id="guestBtn" class="link-btn">
+            Continue as Guest
+        </button>
+
+    </section>
+
+</main>
+
+<script src="script.js"></script>
+
+</body>
+</html>

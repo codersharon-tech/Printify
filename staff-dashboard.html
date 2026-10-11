@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Staff Dashboard | Printzy</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+
+<header class="navbar">
+
+    <a href="index.html" class="brand">
+        🖨️ <strong>Printzy</strong>
+    </a>
+
+
+    <div class="nav-right">
+
+        <span id="loggedStaffName">
+            Staff
+        </span>
+
+        <button
+            id="staffLogoutBtn"
+            class="small-btn"
+        >
+            Logout
+        </button>
+
+    </div>
+
+</header>
+
+
+
+<main class="page dashboard">
+
+    <div class="page-heading">
+
+        <span class="pill">
+            🧑‍💻 Printing Staff
+        </span>
+
+        <h1>
+            Staff Dashboard
+        </h1>
+
+        <p>
+            Here are the orders assigned to you.
+        </p>
+
+    </div>
+
+
+
+    <!-- ================= STAFF STATS ================= -->
+
+    <section class="stats-grid">
+
+        <div class="stat-card">
+
+            <span>🧾</span>
+
+            <small>
+                My Orders
+            </small>
+
+            <strong id="myOrders">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>⏳</span>
+
+            <small>
+                Pending
+            </small>
+
+            <strong id="myPending">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>🖨️</span>
+
+            <small>
+                Printing
+            </small>
+
+            <strong id="myPrinting">
+                0
+            </strong>
+
+        </div>
+
+    </section>
+
+
+
+    <section class="panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <span class="panel-label">
+                    📋 ASSIGNED ORDERS
+                </span>
+
+                <h2>
+                    My Orders
+                </h2>
+
+            </div>
+
+
+            <input
+                type="text"
+                id="staffOrderSearch"
+                class="search-input"
+                placeholder="Search order..."
+            >
+
+        </div>
+
+
+        <div id="staffOrdersContainer">
+        </div>
+
+    </section>
+
+</main>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>

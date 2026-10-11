@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Admin Dashboard | Printzy</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+
+<header class="navbar">
+
+    <a href="index.html" class="brand">
+        🖨️ <strong>Printzy</strong>
+    </a>
+
+    <div class="nav-right">
+
+        <span>
+            👑 Admin
+        </span>
+
+        <button
+            id="adminLogoutBtn"
+            class="small-btn"
+        >
+            Logout
+        </button>
+
+    </div>
+
+</header>
+
+
+
+<main class="page dashboard">
+
+    <div class="page-heading">
+
+        <span class="pill">
+            👑 Control Center
+        </span>
+
+        <h1>
+            Admin Dashboard
+        </h1>
+
+        <p>
+            Manage orders, staff assignments and business performance.
+        </p>
+
+    </div>
+
+
+
+    <!-- ================= STATS ================= -->
+
+    <section class="stats-grid">
+
+        <div class="stat-card">
+
+            <span>🧾</span>
+
+            <small>
+                Total Orders
+            </small>
+
+            <strong id="totalOrders">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>⏳</span>
+
+            <small>
+                Pending Orders
+            </small>
+
+            <strong id="pendingOrders">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>💰</span>
+
+            <small>
+                Today's Turnover
+            </small>
+
+            <strong id="todayRevenue">
+                ₹0
+            </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>📅</span>
+
+            <small>
+                Monthly Turnover
+            </small>
+
+            <strong id="monthRevenue">
+                ₹0
+            </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>📊</span>
+
+            <small>
+                Yearly Turnover
+            </small>
+
+            <strong id="yearRevenue">
+                ₹0
+            </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>💎</span>
+
+            <small>
+                Average Order
+            </small>
+
+            <strong id="averageOrder">
+                ₹0
+            </strong>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ================= BUSINESS ================= -->
+
+    <section class="business-panel">
+
+        <div>
+
+            <span class="panel-label">
+                💼 BUSINESS OVERVIEW
+            </span>
+
+            <h2>
+                Printzy Turnover
+            </h2>
+
+            <p>
+                Turnover is calculated from the order totals
+                stored in this browser.
+            </p>
+
+        </div>
+
+
+        <div class="turnover-grid">
+
+            <div>
+                <span>Today</span>
+                <strong id="businessToday">
+                    ₹0
+                </strong>
+            </div>
+
+            <div>
+                <span>This Month</span>
+                <strong id="businessMonth">
+                    ₹0
+                </strong>
+            </div>
+
+            <div>
+                <span>This Year</span>
+                <strong id="businessYear">
+                    ₹0
+                </strong>
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ================= STAFF ================= -->
+
+    <section class="panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <span class="panel-label">
+                    👥 STAFF
+                </span>
+
+                <h2>
+                    Staff Members
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div id="staffList" class="staff-grid"></div>
+
+    </section>
+
+
+
+    <!-- ================= ORDERS ================= -->
+
+    <section class="panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <span class="panel-label">
+                    🧾 ORDERS
+                </span>
+
+                <h2>
+                    All Orders
+                </h2>
+
+            </div>
+
+
+            <input
+                type="text"
+                id="orderSearch"
+                class="search-input"
+                placeholder="Search order, name or department..."
+            >
+
+        </div>
+
+
+        <div id="adminOrdersContainer">
+        </div>
+
+    </section>
+
+
+
+    <section class="danger-panel">
+
+        <h3>
+            ⚠️ Prototype Data
+        </h3>
+
+        <p>
+            This button removes all locally stored orders from this browser.
+        </p>
+
+        <button
+            id="clearOrdersBtn"
+            class="danger-btn"
+        >
+            Clear All Orders
+        </button>
+
+    </section>
+
+</main>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
