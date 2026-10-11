@@ -1,9 +1,12 @@
-/* =========================================
-   PRINTZY - COMPLETE JAVASCRIPT
-========================================= */
+"use strict";
+
+/* ======================================
+   PRINTZY SETTINGS
+====================================== */
 
 const UPI_ID = "8695185199@pytes";
 const DELIVERY_CHARGE = 20;
+const MAX_PDF_SIZE = 10 * 1024 * 1024;
 
 const PRINT_PRICES = {
     BW: 1,
@@ -13,15 +16,28 @@ const PRINT_PRICES = {
 const BINDING_PRICES = {
     None: 0,
     Stapling: 5,
-    "Spiral Binding": 30,
     "Comb Binding": 25,
+    "Spiral Binding": 30,
     Softcover: 40,
     Hardcover: 80
 };
 
-/* =========================================
+/* ======================================
    COMMON FUNCTIONS
-========================================= */
+====================================== */
+
+function money(amount) {
+    return "₹" + Number(amount).toFixed(2);
+}
+
+function showMessage(message, color = "#dc2626") {
+    const element = document.getElementById("orderMessage");
+
+    if (element) {
+        element.textContent = message;
+        element.style.color = color;
+    }
+}
 
 function getOrders() {
     try {
@@ -31,7 +47,7 @@ function getOrders() {
 
         return Array.isArray(orders) ? orders : [];
     } catch (error) {
-        console.error("Could not load orders:", error);
+        console.error(error);
         return [];
     }
 }
@@ -45,318 +61,295 @@ function saveOrders(orders) {
 
         return true;
     } catch (error) {
-        console.error("Could not save orders:", error);
+        console.error(error);
         return false;
     }
 }
 
-function generateOrderID() {
-    return "PZ-" + Date.now().toString().slice(-8);
-}
-
-function formatMoney(amount) {
-    return "₹" + Number(amount || 0).toFixed(2);
-}
-
-function showMessage(element, message, color = "#dc2626") {
-    if (!element) return;
-
-    element.textContent = message;
-    element.style.color = color;
-}
-
-/* =========================================
-   STUDENT LOGIN
-   This is a basic demo, not secure authentication.
-========================================= */
-
-const loginForm = document.getElementById("loginForm");
-
-if (loginForm) {
-    loginForm.addEventListener("submit", function (event) {
-        event.preventDefault();
-
-        const username = document
-            .getElementById("username")
-            ?.value.trim();
-
-        const password = document
-            .getElementById("password")
-            ?.value;
-
-        const message = document.getElementById("loginMessage");
-
-        if (!username || !password) {
-            showMessage(
-                message,
-                "Please enter your username and password."
-            );
-            return;
-        }
-
-        localStorage.setItem("printzyStudent", "true");
-        localStorage.setItem("printzyStudentName", username);
-
-        showMessage(
-            message,
-            "Opening the order page...",
-            "#16a34a"
-        );
-
-        window.location.href = "order.html";
-    });
-}
-
-const guestBtn = document.getElementById("guestBtn");
-
-if (guestBtn) {
-    guestBtn.addEventListener("click", function () {
-        localStorage.setItem("printzyStudent", "true");
-        localStorage.setItem("printzyStudentName", "Guest");
-
-        window.location.href = "order.html";
-    });
-}
-
-/* =========================================
-   ORDER PAGE
-========================================= */
+/* ======================================
+   PDF PAGE COUNT AND ORDER CALCULATION
+====================================== */
 
 const orderForm = document.getElementById("orderForm");
 
 if (orderForm) {
+    const pdfInput = document.getElementById("pdfFile");
     const copiesInput = document.getElementById("copies");
     const printTypeInput = document.getElementById("printType");
+    const bindingInput = document.getElementById("binding");
+
+    const pageDisplay = document.getElementById("pdfPageCount");
+    const summaryPages = document.getElementById("summaryPages");
+    const summaryCopies = document.getElementById("summaryCopies");
+    const summaryPrintedPages =
+        document.getElementById("summaryPrintedPages");
 
     const printingAmount = document.getElementById("printingAmount");
     const bindingAmount = document.getElementById("bindingAmount");
     const estimatedTotal = document.getElementById("estimatedTotal");
 
-    const upiDisplay = document.getElementById("upiDisplay");
-    const gpayBtn = document.getElementById("gpayBtn");
-    const copyUpiBtn = document.getElementById("copyUpiBtn");
-    const orderMessage = document.getElementById("orderMessage");
+    const submitButton = document.getElementById("submitOrder");
 
-    if (upiDisplay) {
-        upiDisplay.textContent = UPI_ID;
-    }
+    let pdfPageCount = 0;
+    let pdfLoading = false;
+    let pdfRequestNumber = 0;
 
-    function getSelectedBinding() {
-        const selected = document.querySelector(
-            'input[name="binding"]:checked'
+    document.getElementById("upiDisplay").textContent = UPI_ID;
+
+    function getCopies() {
+        return Math.max(
+            1,
+            Math.min(
+                500,
+                parseInt(copiesInput.value, 10) || 1
+            )
         );
-
-        const name = selected ? selected.value : "None";
-
-        return {
-            name: name,
-            price: BINDING_PRICES[name] ?? 0
-        };
     }
 
-    function updateUPILink(total) {
-        if (!gpayBtn) return;
-
-        const upiURL =
-            "upi://pay?" +
-            "pa=" + encodeURIComponent(UPI_ID) +
-            "&pn=" + encodeURIComponent("Printzy") +
-            "&am=" + encodeURIComponent(total.toFixed(2)) +
-            "&cu=INR" +
-            "&tn=" + encodeURIComponent("Printzy Order");
-
-        gpayBtn.href = upiURL;
+    function getBindingPrice() {
+        return BINDING_PRICES[bindingInput.value] ?? 0;
     }
 
     function calculateTotal() {
-        const copies = Math.max(
-            1,
-            parseInt(copiesInput?.value || "1", 10) || 1
-        );
+        const copies = getCopies();
+        const pricePerPage =
+            PRINT_PRICES[printTypeInput.value] ?? 1;
 
-        const printType = printTypeInput?.value || "BW";
-
-        const pricePerCopy = PRINT_PRICES[printType] ?? PRINT_PRICES.BW;
-
-        const printingPrice = copies * pricePerCopy;
-        const binding = getSelectedBinding();
+        const printedPages = pdfPageCount * copies;
+        const printCost = printedPages * pricePerPage;
+        const bindingCost = getBindingPrice();
 
         const total =
-            printingPrice +
-            binding.price +
-            DELIVERY_CHARGE;
+            printCost + bindingCost + DELIVERY_CHARGE;
 
-        if (printingAmount) {
-            printingAmount.textContent = formatMoney(printingPrice);
-        }
+        summaryCopies.textContent = copies;
 
-        if (bindingAmount) {
-            bindingAmount.textContent = formatMoney(binding.price);
-        }
+        summaryPages.textContent =
+            pdfPageCount > 0 ? pdfPageCount : "—";
 
-        if (estimatedTotal) {
-            estimatedTotal.textContent = formatMoney(total);
-        }
+        summaryPrintedPages.textContent =
+            pdfPageCount > 0 ? printedPages : "—";
+
+        printingAmount.textContent =
+            pdfPageCount > 0 ? money(printCost) : "Upload PDF";
+
+        bindingAmount.textContent = money(bindingCost);
+
+        estimatedTotal.textContent =
+            pdfPageCount > 0 ? money(total) : "Upload PDF";
 
         updateUPILink(total);
 
-        return total;
+        return {
+            copies,
+            printedPages,
+            printCost,
+            bindingCost,
+            total,
+            pricePerPage
+        };
     }
 
-    copiesInput?.addEventListener("input", calculateTotal);
-    printTypeInput?.addEventListener("change", calculateTotal);
+    function updateUPILink(amount) {
+        const button = document.getElementById("gpayBtn");
 
-    document
-        .querySelectorAll('input[name="binding"]')
-        .forEach(function (radio) {
-            radio.addEventListener("change", calculateTotal);
+        if (!button) return;
+
+        const params = new URLSearchParams({
+            pa: UPI_ID,
+            pn: "Printzy",
+            am: amount.toFixed(2),
+            cu: "INR",
+            tn: "Printzy Printing Order"
         });
 
-    if (copyUpiBtn) {
-        copyUpiBtn.addEventListener("click", async function () {
+        button.href = "upi://pay?" + params.toString();
+    }
+
+    /* Read selected PDF and count its pages */
+    pdfInput.addEventListener("change", async function () {
+        const file = pdfInput.files[0];
+        const requestNumber = ++pdfRequestNumber;
+
+        pdfPageCount = 0;
+        pdfLoading = false;
+
+        pageDisplay.textContent = "PDF pages detected: —";
+        calculateTotal();
+
+        if (!file) return;
+
+        if (!file.name.toLowerCase().endsWith(".pdf")) {
+            pdfInput.value = "";
+            showMessage("Please select a PDF file.");
+            return;
+        }
+
+        if (file.size > MAX_PDF_SIZE) {
+            pdfInput.value = "";
+            showMessage("PDF must be 10 MB or smaller.");
+            return;
+        }
+
+        if (typeof pdfjsLib === "undefined") {
+            showMessage(
+                "PDF reader failed to load. Check your internet connection and refresh."
+            );
+            return;
+        }
+
+        pdfLoading = true;
+        submitButton.disabled = true;
+
+        pageDisplay.textContent = "Counting PDF pages...";
+        showMessage("Reading PDF. Please wait...", "#2563eb");
+
+        try {
+            const bytes = new Uint8Array(await file.arrayBuffer());
+
+            const pdf = await pdfjsLib.getDocument({
+                data: bytes
+            }).promise;
+
+            if (requestNumber !== pdfRequestNumber) {
+                await pdf.destroy();
+                return;
+            }
+
+            pdfPageCount = pdf.numPages;
+
+            if (pdfPageCount < 1) {
+                throw new Error("PDF contains no pages.");
+            }
+
+            pageDisplay.textContent =
+                "PDF pages detected: " + pdfPageCount;
+
+            showMessage(
+                "PDF successfully read: " + pdfPageCount + " pages.",
+                "#16a34a"
+            );
+
+            await pdf.destroy();
+
+        } catch (error) {
+            console.error("PDF error:", error);
+
+            if (requestNumber === pdfRequestNumber) {
+                pdfPageCount = 0;
+
+                pageDisplay.textContent =
+                    "Unable to read PDF pages.";
+
+                showMessage(
+                    "Could not read this PDF. Please try another PDF."
+                );
+            }
+        } finally {
+            if (requestNumber === pdfRequestNumber) {
+                pdfLoading = false;
+                submitButton.disabled = false;
+                calculateTotal();
+            }
+        }
+    });
+
+    copiesInput.addEventListener("input", calculateTotal);
+    printTypeInput.addEventListener("change", calculateTotal);
+    bindingInput.addEventListener("change", calculateTotal);
+
+    /* Copy UPI ID */
+    document.getElementById("copyUpiBtn")
+        .addEventListener("click", async function () {
             try {
                 await navigator.clipboard.writeText(UPI_ID);
-                copyUpiBtn.textContent = "Copied!";
+                this.textContent = "Copied!";
 
-                setTimeout(function () {
-                    copyUpiBtn.textContent = "Copy UPI ID";
+                setTimeout(() => {
+                    this.textContent = "Copy UPI ID";
                 }, 1500);
             } catch (error) {
-                window.prompt("Copy this UPI ID:", UPI_ID);
+                window.prompt("Copy your UPI ID:", UPI_ID);
             }
         });
-    }
 
-    // Calculate the first total when the page opens.
-    calculateTotal();
-
-    /* =====================================
-       SUBMIT ORDER
-    ===================================== */
+    /* ======================================
+       PLACE ORDER
+    ====================================== */
 
     orderForm.addEventListener("submit", function (event) {
         event.preventDefault();
 
-        function getValue(id) {
-            return document.getElementById(id)?.value.trim() || "";
-        }
-
-        const studentName = getValue("studentName");
-        const phone = getValue("phone");
-        const department = getValue("department");
-        const studentClass = getValue("studentClass");
-
-        const deliveryLocation = getValue("deliveryLocation");
-        const deliveryTime = getValue("deliveryTime");
-
-        const pdfInput = document.getElementById("pdfFile");
-        const pdfFile = pdfInput?.files?.[0];
-
-        const copies = parseInt(copiesInput?.value || "1", 10);
-        const printType = printTypeInput?.value || "BW";
-        const side = getValue("side") || "Single Side";
-
-        const binding = getSelectedBinding();
-
-        const paymentMethod =
-            document.querySelector(
-                'input[name="paymentMethod"]:checked'
-            )?.value || "UPI";
-
-        /* VALIDATION */
-
-        if (!studentName) {
-            showMessage(orderMessage, "Enter your name.");
+        if (pdfLoading) {
+            showMessage("Please wait while the PDF page count is calculated.");
             return;
         }
+
+        if (pdfPageCount < 1) {
+            showMessage("Upload a readable PDF and wait for page counting.");
+            return;
+        }
+
+        if (!orderForm.reportValidity()) {
+            return;
+        }
+
+        const studentName =
+            document.getElementById("studentName").value.trim();
+
+        const phone =
+            document.getElementById("phone").value.trim();
 
         if (!/^[0-9]{10}$/.test(phone)) {
-            showMessage(
-                orderMessage,
-                "Enter a valid 10-digit phone number."
-            );
+            showMessage("Enter a valid 10-digit phone number.");
             return;
         }
 
-        if (!department) {
-            showMessage(orderMessage, "Select your department.");
-            return;
-        }
-
-        if (!studentClass) {
-            showMessage(orderMessage, "Enter your class or year.");
-            return;
-        }
-
-        if (!Number.isInteger(copies) || copies < 1 || copies > 500) {
-            showMessage(
-                orderMessage,
-                "Copies must be between 1 and 500."
-            );
-            return;
-        }
-
-        if (!pdfFile) {
-            showMessage(orderMessage, "Please select a PDF file.");
-            return;
-        }
-
-        if (
-            (pdfFile.type && pdfFile.type !== "application/pdf") ||
-            !pdfFile.name.toLowerCase().endsWith(".pdf")
-        ) {
-            showMessage(orderMessage, "Only PDF files are allowed.");
-            return;
-        }
-
-        if (pdfFile.size > 10 * 1024 * 1024) {
-            showMessage(
-                orderMessage,
-                "The PDF file must be 10 MB or smaller."
-            );
-            return;
-        }
-
-        if (!deliveryLocation) {
-            showMessage(orderMessage, "Enter your delivery location.");
-            return;
-        }
-
-        if (!deliveryTime) {
-            showMessage(orderMessage, "Enter your delivery time.");
-            return;
-        }
-
-        /* CREATE ORDER */
-
-        const total = calculateTotal();
+        const details = calculateTotal();
 
         const order = {
-            id: generateOrderID(),
-            studentName: studentName,
-            phone: phone,
-            department: department,
-            studentClass: studentClass,
+            id: "PZ-" + Date.now(),
+            studentName,
+            phone,
 
-            // Only the filename is saved; the PDF itself is not uploaded.
-            fileName: pdfFile.name,
+            department:
+                document.getElementById("department").value,
 
-            copies: copies,
-            printType: printType === "COLOUR" ? "Colour" : "B&W",
-            side: side,
-            binding: binding.name,
-            bindingPrice: binding.price,
+            studentClass:
+                document.getElementById("studentClass").value.trim(),
 
-            deliveryLocation: deliveryLocation,
-            deliveryTime: deliveryTime,
+            fileName: pdfInput.files[0].name,
 
-            paymentMethod: paymentMethod,
+            pageCount: pdfPageCount,
+            copies: details.copies,
+            totalPrintedPages: details.printedPages,
+
+            printType: printTypeInput.value,
+            pricePerPage: details.pricePerPage,
+
+            side: document.getElementById("side").value,
+
+            binding: bindingInput.value,
+            bindingPrice: details.bindingCost,
+
+            deliveryLocation:
+                document.getElementById("deliveryLocation").value.trim(),
+
+            deliveryTime:
+                document.getElementById("deliveryTime").value.trim(),
+
+            paymentMethod:
+                document.getElementById("paymentMethod").value,
+
             paymentStatus:
-                paymentMethod === "UPI"
+                document.getElementById("paymentMethod").value === "UPI"
                     ? "Payment Pending"
                     : "Pay Later",
 
-            total: total,
+            printingPrice: details.printCost,
+            deliveryCharge: DELIVERY_CHARGE,
+            total: details.total,
+
             status: "Pending",
             createdAt: new Date().toISOString()
         };
@@ -366,71 +359,37 @@ if (orderForm) {
 
         if (!saveOrders(orders)) {
             showMessage(
-                orderMessage,
-                "Could not save the order. Check your browser storage."
+                "Order could not be saved. Browser storage may be unavailable."
             );
             return;
         }
 
         showMessage(
-            orderMessage,
             "Order placed successfully! Order ID: " + order.id,
             "#16a34a"
         );
 
-        window.alert(
-            "PRINTZY ORDER PLACED!\n\n" +
+        alert(
+            "PRINTZY ORDER SUCCESSFUL!\n\n" +
             "Order ID: " + order.id + "\n" +
-            "Student: " + studentName + "\n" +
-            "Total: " + formatMoney(total) + "\n" +
-            "Payment: " + order.paymentStatus
+            "PDF pages: " + order.pageCount + "\n" +
+            "Copies: " + order.copies + "\n" +
+            "Total printed pages: " + order.totalPrintedPages + "\n" +
+            "Printing cost: " + money(order.printingPrice) + "\n" +
+            "Binding: " + money(order.bindingPrice) + "\n" +
+            "Delivery: " + money(order.deliveryCharge) + "\n" +
+            "TOTAL: " + money(order.total)
         );
 
         orderForm.reset();
 
-        const noBinding = document.querySelector(
-            'input[name="binding"][value="None"]'
-        );
+        pdfRequestNumber++;
+        pdfPageCount = 0;
+        pdfLoading = false;
 
-        if (noBinding) {
-            noBinding.checked = true;
-        }
-
+        pageDisplay.textContent = "PDF pages detected: —";
         calculateTotal();
     });
+
+    calculateTotal();
 }
-
-/* =========================================
-   ADMIN / STAFF LOGIN
-   No demo passwords are included.
-   Configure secure authentication before use.
-========================================= */
-
-const adminLoginForm = document.getElementById("adminLoginForm");
-
-if (adminLoginForm) {
-    adminLoginForm.addEventListener("submit", function (event) {
-        event.preventDefault();
-
-        showMessage(
-            document.getElementById("adminLoginMessage"),
-            "Admin login is not configured yet. Set up secure authentication first."
-        );
-    });
-}
-
-const staffLoginForm = document.getElementById("staffLoginForm");
-
-if (staffLoginForm) {
-    staffLoginForm.addEventListener("submit", function (event) {
-        event.preventDefault();
-
-        showMessage(
-            document.getElementById("staffLoginMessage"),
-            "Staff login is not configured yet. Set up secure authentication first."
-        );
-    });
-}
-
-/* Admin and staff dashboards remain unavailable until
-   proper authentication and authorization are implemented. */
